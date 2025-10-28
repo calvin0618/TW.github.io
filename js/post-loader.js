@@ -29,13 +29,42 @@ console.log('[post-loader.js] 게시글 로더 로드됨');
             console.log('[post-loader.js] 게시글 로드 중:', postId);
             
             // posts.json에서 게시글 메타데이터 찾기
-            const postsResponse = await fetch('../posts.json');
-            if (!postsResponse.ok) {
-                throw new Error('posts.json을 찾을 수 없습니다');
+            let posts = [];
+            let post = null;
+            
+            try {
+                const postsResponse = await fetch('../posts.json');
+                if (postsResponse.ok) {
+                    posts = await postsResponse.json();
+                    console.log('[post-loader.js] posts.json 로드 성공');
+                }
+            } catch (e) {
+                console.log('[post-loader.js] posts.json 로드 실패, 기본 데이터 사용');
             }
             
-            const posts = await postsResponse.json();
-            const post = posts.find(p => p.id === postId);
+            // posts.json이 없으면 기본 데이터 사용
+            if (posts.length === 0) {
+                posts = [
+                    {
+                        id: 'welcome',
+                        title: '환영합니다!',
+                        date: '2025-01-29',
+                        tags: ['블로그', '시작하기', '안내'],
+                        category: '일반',
+                        filename: 'welcome.md'
+                    },
+                    {
+                        id: 'example',
+                        title: '첫 번째 게시글',
+                        date: '2025-01-28',
+                        tags: ['JavaScript', 'Web', 'Tutorial'],
+                        category: 'Development',
+                        filename: 'example.md'
+                    }
+                ];
+            }
+            
+            post = posts.find(p => p.id === postId);
             
             if (!post) {
                 throw new Error('게시글을 찾을 수 없습니다');

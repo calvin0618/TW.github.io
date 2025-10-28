@@ -33,13 +33,39 @@ console.log('[app.js] 메인 애플리케이션 로드됨');
             
         } catch (error) {
             console.error('[app.js] 게시글 로드 실패:', error);
-            document.getElementById('posts-container').innerHTML = `
-                <div class="error">
-                    <h3>게시글을 불러올 수 없습니다</h3>
-                    <p>${error.message}</p>
-                    <p>GitHub Actions가 실행되어 posts.json이 생성될 때까지 기다려주세요.</p>
-                </div>
-            `;
+            
+            // posts.json이 없을 때 기본 게시글 표시
+            const defaultPosts = [
+                {
+                    id: 'welcome',
+                    title: '환영합니다!',
+                    date: '2025-01-29',
+                    description: 'GitHub Pages 정적 블로그에 오신 것을 환영합니다. 이곳에서 다양한 주제의 글들을 만나보세요.',
+                    tags: ['블로그', '시작하기', '안내'],
+                    category: '일반',
+                    filename: 'welcome.md'
+                },
+                {
+                    id: 'example',
+                    title: '첫 번째 게시글',
+                    date: '2025-01-28',
+                    description: 'GitHub Pages 정적 블로그의 첫 번째 게시글입니다. 기본적인 기능들을 소개합니다.',
+                    tags: ['JavaScript', 'Web', 'Tutorial'],
+                    category: 'Development',
+                    filename: 'example.md'
+                }
+            ];
+            
+            console.log('[app.js] 기본 게시글 데이터 사용');
+            allPosts = defaultPosts;
+            filteredPosts = [...allPosts];
+            
+            if (window.setSearchPosts) {
+                window.setSearchPosts(allPosts);
+            }
+            
+            renderTags();
+            renderPosts();
         }
     }
     
