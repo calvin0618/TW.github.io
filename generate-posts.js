@@ -1,0 +1,101 @@
+const fs = require('fs');
+const path = require('path');
+const matter = require('gray-matter');
+
+function generatePostsJson() {
+  const pagesDir = 'pages';
+  const outputFile = 'posts.json';
+
+  console.log('게시글 메타데이터 생성 중...');
+
+  if (!fs.existsSync(pagesDir)) {
+    console.log('pages 디렉토리가 존재하지 않습니다.');
+    return;
+  }
+
+  const files = fs.readdirSync(pagesDir)
+    .filter(file => file.endsWith('.md'))
+    .sort((a, b) => {
+      // 파일명으로 정렬 (최신순)
+      return b.localeCompare(a);
+    });
+
+  console.log(`발견된 마크다운 파일: ${files.length}개`);
+
+  const posts = files.map((file, index) => {
+    const filePath = path.join(pagesDir, file);
+    const content = fs.readFileSync(filePath, 'utf8');
+
+    try {
+      const { data: frontMatter, content: bodyContent } = matter(content);
+
+      // 기본값 설정
+      const post = {
+        id: path.parse(file).name, // 파일명에서 확장자 제거
+        filename: file,
+        title: frontMatter.title || '제목 없음',
+        date: frontMatter.date || new Date().toISOString().split('T')[0],
+        tags: Array.isArray(frontMatter.tags) ? frontMatter.tags : [],
+        category: frontMatter.category || '',
+        description: frontMatter.description || '',
+        excerpt: generateExcerpt(bodyContent),
+        wordCount: countWords(bodyContent),
+        readingTime: Math.ceil(countWords(bodyContent) / 200), // 평균 읽기 속도 200단어/분
+        created: new Date().toISOString(),
+        updated: new Date().toISOString()
+      };
+
+      console.log(`처리됨: ${file} -> ${post.title}`);
+      return post;
+
+    } catch (error) {
+      console.error(`Front Matter 파싱 실패: ${file}`, error.message);
+      return null;
+    }
+  }).filter(post => post !== null);
+
+  // 날짜순 정렬 (최신순)
+  posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // JSON 파일 생성
+  const jsonContent = JSON.stringify(posts, null, 2);
+  fs.writeFileSync(outputFile, jsonContent, 'utf8');
+
+  console.log(`posts.json 생성 완료: ${posts.length}개 게시글`);
+  console.log(`출력 파일: ${outputFile}`);
+}
+
+function generateExcerpt(content, maxLength = 150) {
+  // 마크다운에서 텍스트만 추출
+  const text = content
+    .replace(/#{1,6}\s+.*/g, '') // 헤더 제거
+    .replace(/```[\s\S]*?```/g, '') // 코드 블록 제거
+    .replace(/`[^`]+`/g, '') // 인라인 코드 제거
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // 링크 텍스트만 유지
+    .replace(/[*_~`]/g, '') // 마크다운 기호 제거
+    .replace(/\n+/g, ' ') // 줄바꿈을 공백으로
+    .trim();
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return text.substring(0, maxLength).trim() + '...';
+}
+
+function countWords(content) {
+  // 마크다운에서 순수 텍스트 단어 수 계산
+  const text = content
+    .replace(/```[\s\S]*?```/g, '') // 코드 블록 제거
+    .replace(/#{1,6}\s+.*/g, '') // 헤더 제거
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // 링크 텍스트만 유지
+    .replace(/[*_~`]/g, '') // 마크다운 기호 제거
+    .replace(/[^\w\s]/g, ' ') // 구두점 제거
+    .replace(/\s+/g, ' ') // 연속 공백 제거
+    .trim();
+
+  return text.split(/\s+/).length;
+}
+
+// 실행
+generatePostsJson();
