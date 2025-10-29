@@ -1,0 +1,20 @@
+[
+  {
+    "file": "example.md",
+    "title": "블로그 시작하기",
+    "date": "2025-01-26",
+    "tags": ["시작", "안내"],
+    "category": "General",
+    "description": "이 블로그의 첫 번째 게시글입니다.",
+    "excerpt": "안녕하세요! Calvin의 기술 블로그에 오신 것을 환영합니다. 블로그 소개 이 블로그는 GitHub Pages를 사용한 정적 블로그입니다. 마크다운으로 작성된 게시글을 자동으로 배포하는 시스템입니다..."
+  },
+  {
+    "file": "welcome.md",
+    "title": "환영합니다!",
+    "date": "2025-01-29",
+    "tags": ["블로그", "시작하기", "안내"],
+    "category": "일반",
+    "description": "GitHub Pages 정적 블로그에 오신 것을 환영합니다. 이곳에서 다양한 주제의 글들을 만나보세요.",
+    "excerpt": "GitHub Pages 정적 블로그에 오신 것을 환영합니다..."
+  }
+]
