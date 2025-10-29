@@ -6,6 +6,7 @@
 
   async function loadPost() {
     console.log('[post-loader.js] 게시글 로드 시작');
+    console.log('[post-loader.js] URL 파라미터 확인:', window.location.search);
     const params = new URLSearchParams(window.location.search);
     const postFile = params.get('post');
     
@@ -23,15 +24,18 @@
 
     try {
       console.log('[post-loader.js] 게시글 파일 요청:', postFile);
+      console.log('[post-loader.js] 요청 URL:', `pages/${postFile}`);
       const response = await fetch(`pages/${postFile}`);
-      
+      console.log('[post-loader.js] 응답 상태:', response.status, response.statusText);
+
       if (!response.ok) {
         console.error('[post-loader.js] HTTP 에러:', response.status, response.statusText);
         throw new Error(`파일을 찾을 수 없습니다 (HTTP ${response.status})`);
       }
-      
+
       const content = await response.text();
       console.log('[post-loader.js] 파일 로드 성공, 크기:', content.length, 'bytes');
+      console.log('[post-loader.js] 파일 내용 미리보기:', content.substring(0, 200));
       
       const { metadata, content: postContent } = parseFrontMatter(content);
       
@@ -80,13 +84,21 @@
     const postContent = frontMatterMatch[2];
     const metadata = {};
 
+    console.log('[post-loader.js] Front Matter 내용:', frontMatter);
+    console.log('[post-loader.js] 추출된 콘텐츠 길이:', postContent.length);
+
     // Parse Front Matter
     const lines = frontMatter.split('\n');
-    lines.forEach(line => {
+    console.log('[post-loader.js] Front Matter 라인들:', lines);
+
+    lines.forEach((line, index) => {
+      console.log(`[post-loader.js] 라인 ${index}: "${line}"`);
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
         const key = line.substring(0, colonIndex).trim();
         let value = line.substring(colonIndex + 1).trim();
+
+        console.log(`[post-loader.js] 파싱: key="${key}", value="${value}"`);
 
         // Remove quotes
         if ((value.startsWith('"') && value.endsWith('"')) ||
@@ -105,8 +117,11 @@
         }
 
         metadata[key] = value;
+        console.log(`[post-loader.js] 메타데이터 추가: ${key} = ${value}`);
       }
     });
+
+    console.log('[post-loader.js] 최종 메타데이터:', metadata);
 
     return { metadata, content: postContent };
   }
