@@ -69,7 +69,7 @@
   }
 
   function parseFrontMatter(content) {
-    const frontMatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    const frontMatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
     
     if (!frontMatterMatch) {
       return { metadata: {}, content };

@@ -37,22 +37,20 @@ console.log('[app.js] 메인 애플리케이션 로드됨');
             // posts.json이 없을 때 기본 게시글 표시
             const defaultPosts = [
                 {
-                    id: 'welcome',
+                    file: 'welcome.md',
                     title: '환영합니다!',
                     date: '2025-01-29',
                     description: 'GitHub Pages 정적 블로그에 오신 것을 환영합니다. 이곳에서 다양한 주제의 글들을 만나보세요.',
                     tags: ['블로그', '시작하기', '안내'],
-                    category: '일반',
-                    filename: 'welcome.md'
+                    category: '일반'
                 },
                 {
-                    id: 'example',
+                    file: 'example.md',
                     title: '첫 번째 게시글',
                     date: '2025-01-28',
                     description: 'GitHub Pages 정적 블로그의 첫 번째 게시글입니다. 기본적인 기능들을 소개합니다.',
                     tags: ['JavaScript', 'Web', 'Tutorial'],
-                    category: 'Development',
-                    filename: 'example.md'
+                    category: 'Development'
                 }
             ];
             
@@ -143,7 +141,7 @@ console.log('[app.js] 메인 애플리케이션 로드됨');
         
         container.innerHTML = filteredPosts.map(post => `
             <article class="post-card">
-                <h2><a href="post.html?id=${post.id}">${post.title}</a></h2>
+                <h2><a href="post.html?post=${post.file}">${post.title}</a></h2>
                 <div class="post-meta">
                     <time datetime="${post.date}">${formatDate(post.date)}</time>
                     ${post.category ? `<span>${post.category}</span>` : ''}
