@@ -160,10 +160,10 @@
     const html = marked.parse(content, { renderer });
     document.getElementById('post-body').innerHTML = html;
 
-    // Highlight code
-    if (window.Prism) {
-      Prism.highlightAll();
-    }
+    // Highlight code (Prism.js disabled due to CSP)
+    // if (window.Prism) {
+    //   Prism.highlightAll();
+    // }
 
     console.log('[post-loader.js] 게시글 표시 완료');
   }
