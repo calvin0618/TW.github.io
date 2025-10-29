@@ -183,7 +183,7 @@
     // Create script element
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
-    script.setAttribute('data-repo', 'calvin0618/TW.github.io');
+    script.setAttribute('data-repo', 'calvin0618/calvin0618.github.io');
     script.setAttribute('data-repo-id', 'R_kgDOQKgoJQ');
     script.setAttribute('data-category', 'General');
     script.setAttribute('data-category-id', 'DIC_kwDOQKgoJc4CiBy1');
