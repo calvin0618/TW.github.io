@@ -35,8 +35,9 @@
       
       const { metadata, content: postContent } = parseFrontMatter(content);
       
-      console.log('[post-loader.js] 메타데이터:', metadata);
+      console.log('[post-loader.js] 메타데이터:', JSON.stringify(metadata, null, 2));
       console.log('[post-loader.js] 콘텐츠 길이:', postContent.length, 'characters');
+      console.log('[post-loader.js] 콘텐츠 미리보기:', postContent.substring(0, 200));
       
       displayPost(metadata, postContent);
       loadGiscus(postFile, metadata.title);
